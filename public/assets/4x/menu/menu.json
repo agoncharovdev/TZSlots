@@ -1,0 +1,52 @@
+{"frames": {
+
+"coin_counter_bg_part":
+{
+	"frame": {"x":0,"y":626,"w":261,"h":87},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":261,"h":87},
+	"sourceSize": {"w":261,"h":87}
+},
+"icon_play":
+{
+	"frame": {"x":0,"y":887,"w":89,"h":110},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":89,"h":110},
+	"sourceSize": {"w":89,"h":110}
+},
+"logo":
+{
+	"frame": {"x":0,"y":0,"w":1023,"h":626},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1023,"h":626},
+	"sourceSize": {"w":1023,"h":626}
+},
+"petal":
+{
+	"frame": {"x":87,"y":815,"w":28,"h":39},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":28,"h":39},
+	"sourceSize": {"w":28,"h":39}
+},
+"shimmer":
+{
+	"frame": {"x":87,"y":626,"w":189,"h":72},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":189,"h":72},
+	"sourceSize": {"w":189,"h":72}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.1",
+	"image": "menu.ktx2",
+	"format": "BASISU_ETC1S",
+	"size": {"w":1024,"h":1024},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:3b4efdd41032e2a4d8ca519253003aba:60123ce97cfb10a9a414ba5f68fa94ab:ba65ad70ab260764e77a89077e705146$"
+}
+}

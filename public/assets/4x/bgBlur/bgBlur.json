@@ -1,0 +1,20 @@
+{"frames": {
+
+"bgBlur":
+{
+	"frame": {"x":1,"y":1,"w":768,"h":1535},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":768,"h":1535},
+	"sourceSize": {"w":768,"h":1535}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "bgBlur.ktx2",
+	"format": "BASISU_ETC1S",
+	"size": {"w":2048,"h":2048},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:29368755f75da77d13b896acbada0bb3:c198c7c17aa50058e3993e84bc1fbbd4:dfe8959da6bff68c3584f13fbd2aa55e$"
+}
+}

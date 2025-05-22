@@ -1,0 +1,24 @@
+{
+  "name": "slot-game-test",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5"
+  },
+  "dependencies": {
+    "pixi.js": "^8.9.2",
+    "@pixi/assets": "^7.4.2",
+    "@pixi/compressed-textures": "^7.4.2",
+    "@pixi/devtools": "^2.0.1",
+    "@tweenjs/tween.js": "^25.0.0",
+    "@types/howler": "^2.2.12",
+    "howler": "^2.2.4"
+  }
+}
