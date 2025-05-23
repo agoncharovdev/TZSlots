@@ -20,7 +20,7 @@ export class TextService {
 
     buttonText(txt: string, maxWidth: number, maxHeight: number, align:TextStyleAlign = 'center', fontSize = 75) {
         const fill = new FillGradient(0, 0, 0, 2);
-        const colors = [0xffffff, 0x00ff99].map((color) => Color.shared.setValue(color).toNumber());
+        const colors = [0xffffff, 0x9d772f].map((color) => Color.shared.setValue(color).toNumber());
         colors.forEach((number, index) => {
             const ratio = index / colors.length;
             fill.addColorStop(ratio, number);
@@ -28,18 +28,11 @@ export class TextService {
 
         const style = new TextStyle({
             align: align,
-            fontFamily: 'Arial',
+            fontFamily: 'Helvetica',
             fontSize: Main.adapt(fontSize),
             // fontStyle: 'italic',
             fontWeight: 'bold',
             fill: { fill },
-            stroke: { color: 0x4a1850, width: 5 },
-            dropShadow: {
-                color: 0x000000,
-                angle: Math.PI / 6,
-                blur: 4,
-                distance: 6,
-            },
             wordWrap: true,
             wordWrapWidth: maxWidth,
         });

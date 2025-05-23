@@ -3,7 +3,7 @@ import {SlotsStateModel} from "../screens/slots/model/SlotsStateModel.ts";
 
 export class ServerService {
 
-    public async doSpin(config:ISlotsConfigState) {
+    public async getUserSpinResponse(config:ISlotsConfigState) {
         return SlotsStateModel.generateRandomReelsState(config);
     }
 }

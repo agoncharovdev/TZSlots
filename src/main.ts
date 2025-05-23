@@ -6,14 +6,11 @@ import {GameScreenNavigator} from "./base/GameScreenNavigator.ts";
 import {MainMenuScreen} from "./screens/menu/MainMenuScreen.ts";
 import {SoundService} from "./services/SoundService.ts";
 import {TextService} from "./services/TextService.ts";
-import {SlotsConfigModel} from "./screens/slots/model/SlotsConfigModel.ts";
 import {ServerService} from "./services/ServerService.ts";
 
 export class Main {
 
     static pixi: Application;
-
-    static readonly slotsConfigModel = new SlotsConfigModel();
 
     static readonly sound = new SoundService();
     static readonly text = new TextService();
@@ -38,7 +35,6 @@ export class Main {
     static get fixedStageHeight() {
         return this._fixedStageHeight;
     }
-
 
     static get scaleFactor() {
         return this._scaleFactor;
@@ -72,28 +68,17 @@ export class Main {
         return size;
     }
 
-    static deAdaptsize(size: number) {
-        if (this.scaleFactor == 4)
-            return size;
-        if (this.scaleFactor == 2)
-            return 2 * size;
-        if (this.scaleFactor == 1)
-            return 4 * size;
-        return size;
-    }
-
     static async initialize() {
         Main.pixi = new Application();
         await Main.pixi.init({
             background: '#1099bb',
             resizeTo: window,
-            resolution: Main.devicePixelRatio, // влияет только на четкость изображения, оставить так
+            resolution: Main.devicePixelRatio,
             autoDensity: true,
         });
         document.body.appendChild(Main.pixi.canvas);
 
         const physicalHeight = window.innerHeight * Main.devicePixelRatio;
-
         if (physicalHeight >= 1024) {
             Main._scaleFactor = 4;
             Main._fixedStageWidth = 1536;
@@ -108,21 +93,14 @@ export class Main {
         Main.pixi.stage.addChild(Main._rootNavigator);
 
         let onResize = () => {
-            // Подстраиваем размер под контейнер при изменении размеров окна
-            // Main.pixi.renderer.resize(
-            //     window.innerWidth,
-            //     window.innerHeight
-            // );
-
             Main._rootScale = window.innerWidth / Main._fixedStageWidth;
             Main._fixedStageHeight = window.innerHeight / Main._rootScale;
             Main._rootNavigator.scale = Main._rootScale;
-
-            console.log(Main.pixi.stage.width, Main.pixi.stage.height);
         }
 
         window.addEventListener('resize', () => onResize());
-        onResize(); // Вызываем при инициализации
+        // Вызываем при инициализации чтобы определить scaleFactor и _fixedStageHeight
+        onResize();
 
         Main.pixi.ticker.minFPS = 60;
         Main.pixi.ticker.maxFPS = 60;

@@ -3,6 +3,7 @@ import type {SlotsScreen} from "../SlotsScreen.ts";
 import {SlotsConfigModel} from "../model/SlotsConfigModel.ts";
 import {Main} from "../../../main.ts";
 import {SlotsStateModel} from "../model/SlotsStateModel.ts";
+import {SoundService} from "../../../services/SoundService.ts";
 
 // @ts-ignore
 export enum SpinState {
@@ -11,16 +12,14 @@ export enum SpinState {
 
 export class SlotsScreenController extends GameObject {
 
+    private _configModel = new SlotsConfigModel();
+    private _stateModel = new SlotsStateModel();
     private _view:SlotsScreen;
-    private _configModel:SlotsConfigModel;
-    private _stateModel:SlotsStateModel;
     private _spinState = SpinState.stopping;
 
     constructor(view:SlotsScreen) {
         super();
         this._view = view;
-        this._configModel = Main.slotsConfigModel;
-        this._stateModel = new SlotsStateModel();
         this._stateModel.reelsState = SlotsStateModel.generateRandomReelsState(this._configModel);
     }
 
@@ -64,10 +63,11 @@ export class SlotsScreenController extends GameObject {
 
     private async doSpin() {
         if (this._spinState == SpinState.idle) {
+            Main.sound.playSound(SoundService.Click);
             this._view.serverResponseView?.clear();
             this.spinState = SpinState.spinning;
 
-            let responseSpinState = await Main.server.doSpin(this._configModel);
+            let responseSpinState = await Main.server.getUserSpinResponse(this._configModel);
             this._stateModel.reelsState = responseSpinState;
             this._view.serverResponseView!.updateState(this._stateModel);
             // this._view.slotsView!.updateState(this._stateModel);

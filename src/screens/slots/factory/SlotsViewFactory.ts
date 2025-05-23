@@ -1,4 +1,4 @@
-import {SymbolView} from "../views/SymbolView.ts";
+import {SymbolView} from "../views/main/SymbolView.ts";
 import * as PIXI from "pixi.js";
 import {SymbolType} from "../model/SlotsConfigModel.ts";
 import {GamePool} from "../../../base/GamePool.ts";
@@ -6,7 +6,7 @@ import {LibraryFlump} from "../../../base/flump/library/LibraryFlump.ts";
 import type {MovieMold} from "../../../base/flump/library/MovieMold.ts";
 import {SlotsServerResponseView} from "../views/SlotsServerResponseView.ts";
 import {SlotsConfigView} from "../views/SlotsConfigView.ts";
-import {SlotsMainView} from "../views/SlotsMainView.ts";
+import {SlotsMainView} from "../views/main/SlotsMainView.ts";
 
 export class SlotsViewFactory extends LibraryFlump {
 
@@ -23,7 +23,7 @@ export class SlotsViewFactory extends LibraryFlump {
         }
     }
 
-    protected createContainerByClassName(className: string, movieMold: MovieMold) {
+    override createContainerByClassName(className: string, movieMold: MovieMold) {
         let container =  super.createContainerByClassName(className, movieMold);
         if(!container) {
             switch (className) {

@@ -1,5 +1,5 @@
-import {GameView} from "../../../base/GameView.ts";
-import type {SymbolType} from "../model/SlotsConfigModel.ts";
+import {GameView} from "../../../../base/GameView.ts";
+import type {SymbolType} from "../../model/SlotsConfigModel.ts";
 
 export class SymbolView extends GameView {
 
@@ -8,7 +8,7 @@ export class SymbolView extends GameView {
     constructor(symbolType:SymbolType) {
         super();
         this._type = symbolType;
-        console.log('symbolView');
+        // console.log('symbolView');
     }
 
     get type() {

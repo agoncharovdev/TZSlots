@@ -1,22 +1,22 @@
-import {Container} from "../../../base/flump/display/Container.ts";
-import type {SlotsViewFactory} from "../factory/SlotsViewFactory.ts";
-import {GameObject} from "../../../base/GameObject.ts";
-import {GameView} from "../../../base/GameView.ts";
-import type {Placer} from "../../../base/flump/display/Placer.ts";
-import {type ISlotsState, ReelState} from "../model/SlotsStateModel.ts";
-import {ReelView} from "./ReelView.ts";
-import {ArrayUtils} from "../../../base/utils/ArrayUtils.ts";
-import {MathUtils} from "../../../base/utils/MathUtils.ts";
-import {FuncUtil} from "../../../base/utils/FuncUtil.ts";
+import {Container} from "../../../../base/flump/display/Container.ts";
+import type {SlotsViewFactory} from "../../factory/SlotsViewFactory.ts";
+import {GameObject} from "../../../../base/GameObject.ts";
+import {GameView} from "../../../../base/GameView.ts";
+import type {Placer} from "../../../../base/flump/display/Placer.ts";
+import {type ISlotsState, ReelState} from "../../model/SlotsStateModel.ts";
+import {SlotsReelView} from "./SlotsReelView.ts";
+import {ArrayUtils} from "../../../../base/utils/ArrayUtils.ts";
+import {MathUtils} from "../../../../base/utils/MathUtils.ts";
+import {FuncUtil} from "../../../../base/utils/FuncUtil.ts";
 
 export class SlotsMainView extends Container {
 
     viewFactory!:SlotsViewFactory;
 
     private _reelsContainer:GameView | null = null;
-    private _reels:ReelView[] = [];
-    private _spinningReels:ReelView[] = [];
-    private _onReelsSpinEnd:(()=>void) | null = null;
+    private _reels:SlotsReelView[] = [];
+    private _spinningReels:SlotsReelView[] = [];
+    private _onAllReelsSpinEnd:(()=>void) | null = null;
 
     override destroy() {
         super.destroy();
@@ -34,7 +34,7 @@ export class SlotsMainView extends Container {
         this._reelsContainer = new GameView();
 
         for (const reel of state.reelsState) {
-            let reelView = new ReelView(this.viewFactory);
+            let reelView = new SlotsReelView(this.viewFactory);
             reelView.setInitialSymbols(reel.symbols);
             reelView.x = this._reelsContainer.width;
             this._reelsContainer?.addChild(reelView);
@@ -49,8 +49,8 @@ export class SlotsMainView extends Container {
             .alignCenter();
     }
 
-    public spin(endReelStates:ReelState[], speedPixelsPerSecond:number, onSpinEnd:() => void) {
-        this._onReelsSpinEnd = onSpinEnd;
+    public spin(endReelStates:ReelState[], speedPixelsPerSecond:number, onAllReelsSpinEnd:() => void) {
+        this._onAllReelsSpinEnd = onAllReelsSpinEnd;
         this._spinningReels = this._reels.slice();
         for (let i = 0; i < this._reels.length; i++) {
             let reel = this._reels[i];
@@ -60,14 +60,16 @@ export class SlotsMainView extends Container {
                 endReelStates[i].symbols,
                 this.onReelAnimationEnd.bind(this)
             );
-
         }
     }
 
-    private onReelAnimationEnd(reel: ReelView) {
+    private onReelAnimationEnd(reel: SlotsReelView) {
         ArrayUtils.remove(this._spinningReels, reel);
+
+        // когда все рилсы закончили анимацию
+
         if (!this._spinningReels.length) {
-            FuncUtil.call(this._onReelsSpinEnd);
+            FuncUtil.call(this._onAllReelsSpinEnd);
         }
     }
 

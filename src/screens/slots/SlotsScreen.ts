@@ -3,7 +3,7 @@ import {AssetsLoader} from "../../services/assets/AssetsLoader.ts";
 import {ViewUtils} from "../../base/utils/ViewUtils.ts";
 import {Main} from "../../main.ts";
 import {type SlotsConfigView} from "./views/SlotsConfigView.ts";
-import {type SlotsMainView} from "./views/SlotsMainView.ts";
+import {type SlotsMainView} from "./views/main/SlotsMainView.ts";
 import {SlotsServerResponseView} from "./views/SlotsServerResponseView.ts";
 import {type Button} from "../../base/flump/display/Button.ts";
 import {GameObject} from "../../base/GameObject.ts";

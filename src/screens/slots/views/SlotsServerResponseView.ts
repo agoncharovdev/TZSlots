@@ -5,7 +5,7 @@ import {GameObject} from "../../../base/GameObject.ts";
 import type {Placer} from "../../../base/flump/display/Placer.ts";
 import type {SlotsViewFactory} from "../factory/SlotsViewFactory.ts";
 import {Main} from "../../../main.ts";
-import {ReelView} from "./ReelView.ts";
+import {SlotsReelView} from "./main/SlotsReelView.ts";
 
 export class SlotsServerResponseView extends Container {
 
@@ -36,7 +36,7 @@ export class SlotsServerResponseView extends Container {
         this._reelsContainer = new GameView();
 
         for (const reel of state.reelsState) {
-            let reelView = new ReelView(this.viewFactory);
+            let reelView = new SlotsReelView(this.viewFactory);
             reelView.setInitialSymbols(reel.symbols);
             reelView.x = this._reelsContainer.width;
             this._reelsContainer?.addChild(reelView);

@@ -33,7 +33,7 @@ export class SlotsConfigModel implements ISlotsConfigState {
 
     private _reelCount = 5;
     private _symbolCount = 5;
-    private _reelSpeed = 1000;
+    private _reelSpeed = 1500;
 
     get reelSpeed() {
         return this._reelSpeed;

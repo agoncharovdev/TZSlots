@@ -1,12 +1,12 @@
-import {GameView} from "../../../base/GameView.ts";
-import  {type SlotsViewFactory} from "../factory/SlotsViewFactory.ts";
+import {GameView} from "../../../../base/GameView.ts";
+import  {type SlotsViewFactory} from "../../factory/SlotsViewFactory.ts";
 import  {type SymbolView} from "./SymbolView.ts";
-import  {type SymbolType} from "../model/SlotsConfigModel.ts";
-import {SlotsStateModel} from "../model/SlotsStateModel.ts";
-import type {GameTween} from "../../../base/GameJuggler.ts";
-import {Main} from "../../../main.ts";
+import  {type SymbolType} from "../../model/SlotsConfigModel.ts";
+import {SlotsStateModel} from "../../model/SlotsStateModel.ts";
+import type {GameTween} from "../../../../base/GameJuggler.ts";
+import {Main} from "../../../../main.ts";
 import * as PIXI from 'pixi.js';
-import {GameObject} from "../../../base/GameObject.ts";
+import {GameObject} from "../../../../base/GameObject.ts";
 import {Easing} from "@tweenjs/tween.js";
 
 export class ReelSymbolView extends GameView {
@@ -36,23 +36,23 @@ export class ReelSymbolView extends GameView {
     }
 }
 
-export class ReelView extends GameView {
+export class SlotsReelView extends GameView {
 
     viewFactory:SlotsViewFactory;
 
     private _reelsSymbolViews:ReelSymbolView[] = [];
     private _spinTween:GameTween | null = null;
-    private _initialHeight = 0
+    private _initialReelHeight = 0
+
+    private _totalTweenDistance = 0;
+    private _currentTweenDistance = 0;
+    private _prevCurrentTweenDIstance = 0;
 
     constructor(viewFactory:SlotsViewFactory) {
         super();
         this.viewFactory = viewFactory;
     }
 
-    private _totalTweenDistance = 0;
-    private _prevCurrentTweenDIstance = 0;
-
-    private _currentTweenDistance = 0;
     get currentTweenDistance(): number {
         return this._currentTweenDistance;
     }
@@ -75,7 +75,7 @@ export class ReelView extends GameView {
             this._reelsSymbolViews.push(symbolView);
         }
 
-        this._initialHeight = this.height;
+        this._initialReelHeight = this.height;
 
         const mask = new PIXI.Graphics()
             .beginFill(0xffffff)
@@ -84,6 +84,7 @@ export class ReelView extends GameView {
         this.mask = mask;
         this.addChild(mask);
 
+        // в самый низ добавляем дополнительный символ чтобы при анимации поставить его на место верхнего
         let overlaySymbolView = new ReelSymbolView(this.viewFactory);
         overlaySymbolView.setSymbolType(SlotsStateModel.getRandomSymbolType());
         overlaySymbolView.y = this.height;
@@ -91,20 +92,22 @@ export class ReelView extends GameView {
         this._reelsSymbolViews.push(overlaySymbolView);
     }
 
-    public showSpinAnimation(duration:number, speedPixelsPerSecond:number, onCompleteSymbols:SymbolType[], onComplete:(reelView:ReelView) => void) {
+    public showSpinAnimation(duration:number, speedPixelsPerSecond:number, completeSymbols:SymbolType[], onComplete:(reelView:SlotsReelView) => void) {
 
+        // высота символа
         let reelViewHeight = this._reelsSymbolViews[0].height;
-        let spinCompleteSymbolsState = onCompleteSymbols.slice();
-
-        // то что получили от сервера после нажатия на спин
-        let spinCompleteStateAnimDistance = reelViewHeight * onCompleteSymbols.length;
+        // символы которые нужно добавить вконце при завершении анимации (то что получили от сервера после нажатия на спин)
+        let spinCompleteSymbols = completeSymbols.slice();
+        // финишная дистанция для completeSymbols
+        let spinCompleteAnimDistance = reelViewHeight * completeSymbols.length;
 
         // вычисляем полную дистанцию, которое пройдет рил за это время и при этой скорости
-        this._totalTweenDistance = Math.max(duration * speedPixelsPerSecond, spinCompleteStateAnimDistance);
+        this._totalTweenDistance = Math.max(duration * speedPixelsPerSecond, spinCompleteAnimDistance);
 
-        // делаем дистанцию, чтобы она была кратной высоте символов, чтобы символы в риле были четко
+        // делаем дистанцию, чтобы она была кратной высоте символов, чтобы символы при анимации останавливались четко в рамках рила
         this._totalTweenDistance -= this._totalTweenDistance % reelViewHeight;
 
+        // у нас есть гетер и сетер для currentTweenDistance, таким образом можно через твин анимировать это проперти
         this._currentTweenDistance = -this._totalTweenDistance;
         this._prevCurrentTweenDIstance = this._currentTweenDistance;
 
@@ -113,7 +116,8 @@ export class ReelView extends GameView {
         this._spinTween = Main.juggler.tween(this, duration, {
             currentTweenDistance: 0,
         })
-            .onUpdate(()=>{
+            .onUpdate(() => {
+                // расчитываем шаг. на какое значение поменялось currentTweenDistance с предыдущего update - это будет растояние на которое сдвинуть рил
                 let diff = Math.abs(this._prevCurrentTweenDIstance) - Math.abs(this._currentTweenDistance);
                 this._prevCurrentTweenDIstance = this._currentTweenDistance;
 
@@ -126,12 +130,17 @@ export class ReelView extends GameView {
                 // а потом уже находим того, кто за границей рила и делаем его первым
                 for (let i = 0; i < this._reelsSymbolViews.length; i++) {
                     let reelSymbolView = this._reelsSymbolViews[i];
-                    if(reelSymbolView.y >=  this._initialHeight) {
-                        if (spinCompleteSymbolsState.length && Math.abs(this.currentTweenDistance) < spinCompleteStateAnimDistance) {
-                            reelSymbolView.setSymbolType(spinCompleteSymbolsState.pop()!);
-                        } else {
+                    // если символ вышел за границы
+                    if (reelSymbolView.y >= this._initialReelHeight) {
+                        // если осталась дистанция только для финишных символов - то втсавляем их один за другим
+                        if (spinCompleteSymbols.length && Math.abs(this.currentTweenDistance) <= spinCompleteAnimDistance) {
+                            reelSymbolView.setSymbolType(spinCompleteSymbols.pop()!);
+                        }
+                        // иначе просто меняем символ на рандомный
+                        else {
                             reelSymbolView.setSymbolType(SlotsStateModel.getRandomSymbolType());
                         }
+                        // находим первый символ сверху и перед ним ставим этот
                         let topmostReel = this.getTopReelView();
                         reelSymbolView.y = topmostReel.y - reelSymbolView.height;
                     }
@@ -141,7 +150,7 @@ export class ReelView extends GameView {
                 this._reelsSymbolViews.sort((a, b) => a.y - b.y);
             })
             .easing(Easing.Cubic.Out)
-            .onComplete(()=>{
+            .onComplete(() => {
                 onComplete(this);
             })
             .start();
